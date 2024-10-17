@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de bannière de don crypto</title>
+    <link rel="stylesheet" href="misc/styles.css">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet"> -->
+	
+	<!-- This webpage is autonomous - no external web connection -->
+	
+	<link href="misc/font_roboto.css" rel="stylesheet"> 
+    <script src="misc/qrcode.min.js"></script>
+	<script src="misc/html2canvas.min.js"></script>
+	<link rel="icon" type="image/ico" href="img/favicon.ico"/>
+	
+</head>
+<body>
+    <div class="container">
+        <h1>Créez une bannière de don crypto</h1>
+        <p class="subtitle">A intégrer sur votre site ou à imprimer <br \>  <a href="https://linktr.ee/SortieDeBanque" target="_blank">@BankExit</a> - V1 2024 -  <a href="https://github.com/Unbanked0/Sortie_De_Banque" target="_blank">Code libre</a> <br \>
+		Cryptos souveraines et décentralisées, sans entreprise ni siège social, instoppables.
+		</p>
+        <div id="cryptoSelector" class="crypto-selector">
+            <div class="crypto-option">
+                <button class="crypto-button active" data-crypto="monero" title="Monero : intraçable - moyen d'échange à 0,01€ de frais">
+                    <img src="img/xmr_logo.png" alt="Monero">
+                </button>
+                <span class="crypto-name" title="Monero : intraçable - moyen d'échange à 0,01€ de frais">Monero</span>
+            </div>
+            <div class="crypto-option">
+                <button class="crypto-button" data-crypto="bitcoin" title="Bitcoin : traçable - réserve de valeur">
+                    <img src="img/btc_logo.png" alt="Bitcoin">
+                </button>
+                <span class="crypto-name" title="Bitcoin : traçable - réserve de valeur">Bitcoin</span>
+            </div>
+            <div class="crypto-option">
+                <button class="crypto-button" data-crypto="june" title="June G1 : traçable - identité unique par toile de confiance (PoW + PoA)">
+                    <img src="img/june_XG1_logo.png" alt="June G1">
+                </button>
+                <span class="crypto-name" title="June Ğ1 : traçable - identité unique par toile de confiance (PoW + PoA)">June Ğ1</span>
+            </div>
+        </div>
+		
+		<div class="address-insertion">
+            <span id="addressInsertionMessage">Insérez votre adresse de réception</span>
+			<span id="exampleAddress">Exemple (cliquez ici)</span>
+		</div>
+        <!-- Input -->
+        <div class="input-group">
+            <input type="text" id="cryptoAddress" placeholder="Adresse crypto" required>
+            <div class="address-validation">
+                <span id="addressValidationMessage"></span>
+                <a href="https://bank-exit.org/create-wallet/" target="_blank" id="tutorialLink">Pas d'adresse ? Suivez le tuto en 5 min</a>
+            </div>
+        </div>
+        <text><i>Optionnel :</i></text>
+        <div class="input-group">
+            <input type="text" maxlength="20" id="contact-name" placeholder="Nom ou pseudo du receveur" required>
+        </div>
+        <div id="nameValidationMessage"></div>
+        <div class="input-group">
+            <input type="url" maxlength="80" id="contact-url" placeholder="Adresse web URL du receveur">
+            <text>ou</text>
+            <input type="email" maxlength="50" id="contact-email" placeholder="Email de contact du receveur">
+        </div>
+
+        <div class="design-selector" style="display:none;">
+            <label ><input type="radio" name="design" value="classic" > Classique</label>
+            <label ><input type="radio" name="design" value="withLogo" checked> Intégré</label>
+            <!-- <label><input type="radio" name="design" value="minimal"> Compacte</label>  -->
+        </div>
+
+        <div class="purpose-selector">
+            <label>
+                <input id="input_1" type="radio" name="purpose" value="donation" checked> Don
+            </label>
+            <label>
+                <input id="input_2" type="radio" name="purpose" value="payment"> Sticker commerçant
+            </label>
+        </div>
+ 
+        <!-- Crypto donation box -->
+        <div id="banner">
+            <div id="heartIcon"></div>
+            <div id="qrcode">
+                <div id="qrPlaceholder">Renseignez les champs</div>
+            </div>
+            <div id="mobile-text" class="hidden">Cliquez pour copier et ouvrir votre wallet
+            </div> 
+
+			<div id="widgetText">
+				<h2 id="widgetTitle">Don en crypto <span id="cryptoName"></span></h2>
+				<p id="todoText">Copiez l'adresse pour en envoyer à :</p>
+                <p id="todoTextDetails" class="todoText2"></p>
+				<input type="text" id="shortAddress" readonly onclick="toggleAddress()">
+				
+			</div>
+            <p id="purchaseCrypto">Comment acheter du <span id="cryptoName2"></span> ?</p>
+			<img id="cryptoLogo" alt="Crypto Logo">
+
+            <a id="infoButton" href="https://github.com/Unbanked0/Crypto-Donation-Box1" target="_blank" title="Crypto Donation Box - open source et libre !">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+            </a>
+
+        </div>
+		
+
+		<div class="banner-buttons">
+			<div>
+                <span id="textSc" style="text-align: center;"> Faites une capture d'écran et rognez la bannière, ou :</span>
+				<button onclick="copyImageToClipboard()" id="copyImageButton">Copier la bannière</button>
+                <button onclick="testCryptoBox()" id="printBannerButton">Imprimer comme étiquette</button>
+				<button onclick="downloadQRCode()" id="saveButton">Enregistrer la bannière en tant qu'image</button>
+			</div>
+			<span id="copyFeedback" class="feedback-message">Image copiée !</span>
+		</div>
+
+
+        <div id="integrationFields" style="display: none;">
+            <p style="text-align: center;"> _____________________________ </p>
+            <p>Copiez-collez l'un de ces 2 champs sur votre site web, accompagné de l'image png, pour accepter les dons directement et ne pas dépendre de ce site</p>
+            <h4>Code d'intégration HTML :</h4>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <span>Avec auto-détection d'image manquante ?</span>
+                <div style="display: flex; gap: 10px;">
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                        <input type="radio" name="pic-detection" value="yes" checked style="margin-right: 5px;"> Oui (JS)
+                    </label>
+                    <label style="display: flex; align-items: center; cursor: pointer;width: fit-content;">
+                        <input type="radio" name="pic-detection" value="no" style="margin-right: 5px;"> Non 
+                    </label>
+                </div>
+            </div>
+            <textarea id="htmlIntegration" readonly></textarea> <!-- readonly  -->
+            <button id="openHtml" onclick="testCryptoBox()">Tester dans un nouvel onglet</button>
+            
+            <h4>Version minimaliste (PNG + adresse) :</h4>
+            <textarea id="minimalIntegration" readonly></textarea>
+
+            
+
+        </div>
+        <text style="color:rgb(191, 191, 191);font-size: x-small;">Anon no-IP: <span id="visit-count">Chargement...</span></text>
+    </div>
+</div>
+
+    <div id="overlay"></div>
+    <div id="popup">
+        <div id="popupQrcode"></div>
+        <button onclick="closePopup()">Fermer</button>
+    </div>
+
+
+    <script src="misc/script.js"></script>
+
+  
+    <script> 
+    //  API Ninjas
+    const apiKey = 'h5orq3Y7ry0YBZmWy6FwtQ==6Q4FYF0KkwEG7xvA';
+    const counterName = 'crypto-box-visites'; // Nom du compteur à définir
+
+    // Fonction pour récupérer le nombre de visites et l'incrémenter
+    function updateVisitCount() {
+        // URL de l'API pour accéder au compteur
+        const apiUrl = `https://api.api-ninjas.com/v1/counter?id=${counterName}&hit=true`;
+
+        fetch(apiUrl, {
+            method: 'GET', // Type de requête
+            headers: {
+                'X-Api-Key': apiKey // Clé API dans les en-têtes
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erreur : ${response.status}`);
+            }
+            return response.json(); // On attend la réponse JSON
+        })
+        .then(data => {
+            // Afficher le nombre de visites
+            document.getElementById('visit-count').textContent = data.value;
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération du compteur', error);
+        });
+    }
+
+    // Appeler la fonction pour mettre à jour le compteur de visites au chargement de la page
+    updateVisitCount();
+</script>
+
+</body>
+</html>
