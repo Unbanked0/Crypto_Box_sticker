@@ -30,13 +30,17 @@ Website : https://kuno.anne.media/fundraiser/ba4s/
 - Extract it
 - Double click on "index.html"
 - Create your banner by writing a crypto address
-- Save the banner in local folder or on your server with the Save button : /crypto-donation-box/banner-[crypto].png
+- **Save the banner in local folder or on your server** with the Save button : /crypto-donation-box/banner-[crypto].png
 - You can simply post or print the donation sticker everywhere or paste the HTML integration code on your website
 - Good funding and payment receipts !
+
+![image](https://github.com/user-attachments/assets/9b87163b-0e25-42bb-813b-6abe55c515f0)
+
 
 # Todo 
 - Translate in English 
 - Correct simple integration mode
+- Improve web integration with simple div and .js file
 
 Please push your comments and feedbacks here or on Session / Nostr / Forum 
 https://linktr.ee/SortieDeBanque
