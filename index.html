@@ -18,7 +18,7 @@
 <body>
     <div class="container">
         <h1>Créez une bannière de don crypto</h1>
-        <p class="subtitle">A intégrer sur votre site ou à imprimer <br \>  <a href="https://linktr.ee/SortieDeBanque" target="_blank">@BankExit</a> - V1 2024 -  <a href="https://github.com/Unbanked0/Sortie_De_Banque" target="_blank">Code libre</a> <br \>
+        <p class="subtitle">A intégrer sur votre site ou à imprimer <br \>  <a href="https://linktr.ee/SortieDeBanque" target="_blank">@BankExit</a> - V1 2024 -  <a href="https://github.com/Unbanked0/" target="_blank">Code libre</a> <br \>
 		Cryptos souveraines et décentralisées, sans entreprise ni siège social, instoppables.
 		</p>
         <div id="cryptoSelector" class="crypto-selector">
@@ -43,11 +43,12 @@
         </div>
 		
 		<div class="address-insertion">
-            <span id="addressInsertionMessage">Insérez votre adresse de réception</span>
+            <span id="addressInsertionMessage">Insérez votre adresse de réception :</span>
+            <span id="exampleAddress2" onclick="openMoneroWalletOrCakeWallet()">Ouvrir votre portefeuille</span>
 			<span id="exampleAddress">Exemple (cliquez ici)</span>
 		</div>
         <!-- Input -->
-        <div class="input-group">
+        <div class="input-group1">
             <input type="text" id="cryptoAddress" placeholder="Adresse crypto" required>
             <div class="address-validation">
                 <span id="addressValidationMessage"></span>
@@ -61,7 +62,10 @@
         <div id="nameValidationMessage"></div>
         <div class="input-group">
             <input type="url" maxlength="80" id="contact-url" placeholder="Adresse web URL du receveur">
-            <text>ou</text>
+            
+        </div>
+        <div class="input-group">
+         <text>ou</text>
             <input type="email" maxlength="50" id="contact-email" placeholder="Email de contact du receveur">
         </div>
 
@@ -80,40 +84,43 @@
             </label>
         </div>
  
-        <!-- Crypto donation box -->
-        <div id="banner">
-            <div id="heartIcon"></div>
-            <div id="qrcode">
-                <div id="qrPlaceholder">Renseignez les champs</div>
+        <div id="banner-container">  <!-- to take screenshot with margins -->
+
+            <!-- Crypto donation box -->
+            <div id="banner">
+                <div id="heartIcon"></div>
+                <div id="qrcode">
+                    <div id="qrPlaceholder">Renseignez les champs</div>
+                </div>
+                <div id="mobile-text" class="hidden">Cliquez pour copier et ouvrir votre wallet
+                </div> 
+
+                <div id="widgetText">
+                    <h2 id="widgetTitle">Don en crypto <span id="cryptoName"></span></h2>
+                    <p id="todoText">Copiez l'adresse pour en envoyer à :</p>
+                    <p id="todoTextDetails" class="todoText2"></p>
+                    <input type="text" id="shortAddress" readonly onclick="toggleAddress()">
+                    
+                </div>
+                <p id="purchaseCrypto">Comment acheter du <span id="cryptoName2"></span> ?</p>
+                <img id="cryptoLogo" alt="Crypto Logo">
+
+                <a id="infoButton" href="https://github.com/Unbanked0/Crypto_Box_sticker" target="_blank" title="Crypto Donation Box - open source et libre !">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </a>
             </div>
-            <div id="mobile-text" class="hidden">Cliquez pour copier et ouvrir votre wallet
-            </div> 
-
-			<div id="widgetText">
-				<h2 id="widgetTitle">Don en crypto <span id="cryptoName"></span></h2>
-				<p id="todoText">Copiez l'adresse pour en envoyer à :</p>
-                <p id="todoTextDetails" class="todoText2"></p>
-				<input type="text" id="shortAddress" readonly onclick="toggleAddress()">
-				
-			</div>
-            <p id="purchaseCrypto">Comment acheter du <span id="cryptoName2"></span> ?</p>
-			<img id="cryptoLogo" alt="Crypto Logo">
-
-            <a id="infoButton" href="https://github.com/Unbanked0/Crypto-Donation-Box1" target="_blank" title="Crypto Donation Box - open source et libre !">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-                </svg>
-            </a>
-
         </div>
 		
 
 		<div class="banner-buttons">
 			<div>
-                <span id="textSc" style="text-align: center;"> Faites une capture d'écran et rognez la bannière, ou :</span>
-				<button onclick="copyImageToClipboard()" id="copyImageButton">Copier la bannière</button>
-                <button onclick="testCryptoBox()" id="printBannerButton">Imprimer comme étiquette</button>
+                <span id="textSc" style="text-align: center;"> Faites une capture d'écran ou :</span>
+                <button onclick="shareBanner()" id="shareButton">Partager la bannière</button>
+                <button onclick="printBanner()" id="printBannerButton">Imprimer</button>
 				<button onclick="downloadQRCode()" id="saveButton">Enregistrer la bannière en tant qu'image</button>
+                <button onclick="copyImageToClipboard()" id="copyImageButton">Copier</button>
 			</div>
 			<span id="copyFeedback" class="feedback-message">Image copiée !</span>
 		</div>
