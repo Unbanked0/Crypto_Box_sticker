@@ -15,6 +15,7 @@ body {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     max-width: 600px;
     width: 100%;
+
 }
 
 h1 {
@@ -42,24 +43,38 @@ text {
     text-decoration: none;
 }
 
+#banner-container {
+    padding: 2px;
+    background-color: rgba(255, 255, 255, 0);
+    display: flex; 
+    justify-content: center; /* Ceci centrera #banner horizontalement */
+    align-items: center; /* Ceci centrera #banner verticalement */
+    width: 100%;
+    box-sizing: border-box;
+}
+
 #banner {
     width: 450px;
     max-width : 450px;
     height: 110px;
-    background: linear-gradient(to bottom, #ff7f00, #df5900); /* Default Monero colors */
+    background: linear-gradient(to bottom, #ff992c, #e37023); /* Default Monero colors */
+    /* background: linear-gradient(to bottom, #ff9d35, #e5772e);  Fade */
+    /* background: linear-gradient(to bottom, #ff7f00, #df5900);  Strong  */ 
     border-radius: 30px 100px 100px 30px;
     display: flex;
     align-items: center;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     position: relative;
-    margin: 20px auto 0;
+    margin: 15px auto 0;
+    margin-bottom: 1px;
     box-sizing: border-box;
     transition: background 0.3s ease;
 }
 
 #banner.bitcoin {
-    background: linear-gradient(to bottom, #f2a900, #f7931a);
+    background: linear-gradient(to bottom, #eaad20, #f7a036);
+    /* ackground: linear-gradient(to bottom, #f2a900, #f7931a);  */
 }
 
 #banner.june {
@@ -153,13 +168,18 @@ text {
     display: none !important;
 }
 
-@media (max-width: 768px) {  /* Mobile screen */
+/* Mobile screen */
+
+/*  Only for web integration 
+
+@media (max-width: 768px) {  
     #mobile-text:not(.hidden) {
         display: flex;
     }
-}
+}  
+*/
 
-@media (min-width: 769px) {  /* Desktop screen */
+@media (min-width: 100px) {  /* Desktop screen : 769 px for web integration ! */ 
     #mobile-text {
         display: none !important;
     }
@@ -245,10 +265,10 @@ text {
     height: 45px;
     background-color: #ff66003d;
     border-radius: 50%;
-    padding: 5px;
-    border: 2px solid white;
+    padding: 3px;
+    border: 3px solid white;
     position: absolute;
-    right: 20px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
 }
@@ -304,17 +324,29 @@ text {
     font-size: 0.9em;
 	color : #666666;
 	font-weight : 550;
+    margin-right: 5px;
 }
 
-#exampleAddress {
+#exampleAddress, #exampleAddress2 {
     font-size: 0.8em;
     color: #1f9322;
-    text-decoration: underline;
-    padding : 4px;
+    /* text-decoration: underline; */
+    padding: 4px;
     border-radius: 5px;
     border: 1px solid #338a26;
     font-weight: 600;
-	cursor: pointer;
+    cursor: pointer;
+    text-align: center; /* Centre le texte horizontalement */
+    display: inline-flex; /* Utilise flexbox pour un meilleur contrôle */
+    justify-content: center; /* Centre le contenu horizontalement */
+    align-items: center; /* Centre le contenu verticalement */
+
+    margin-right: 10px;
+    max-width: fit-content;
+    min-width: 26%;
+    width: min-content; /* Réduit la largeur au minimum nécessaire */
+    white-space: normal; /* Permet le retour à la ligne */
+    word-break: break-word; /* Permet de casser les mots longs si nécessaire */
 }
 
 .address-validation {
@@ -402,18 +434,33 @@ button:active {
 }
 
 /* Contact inputs */
+
+.input-group1 {
+    display:block;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 #contact-name {
-    width: 50%;
+    width: 45%;
 }
 #contact-url {
     padding:3px;
-    width: 50%;
+    width: 45%;
     background-color: #ebeaea;
 }
 #contact-email {
+    flex: 1;
     padding:3px;
-    width: 50%;
+    width: 45%;
     background-color: #ebeaea;
+    max-width: 40%;
 }
 
 #popup {
@@ -465,7 +512,29 @@ button:active {
 }
 #printBannerButton {
     margin-left: 0px;
+    cursor: pointer;
 }
+
+
+#shareButton {
+    background-color: #4CAF50; /* Vert */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#shareButton:hover {
+    background-color: #45a049;
+}
+
+
 
 .banner-buttons {
     display: flex;
@@ -645,9 +714,9 @@ Eventually for all devices the compact version
     }
 
     #cryptoLogo {
-        width: 33.75px; /* 75% of 45px */
-        height: 33.75px; /* 75% of 45px */
-        right: 15px; /* 75% of 20px */
+        width: 45px; /* 34px  75% of 45px */
+        height: 45px; /* 34px  75% of 45px */
+        right: 10px; /* 75% of 20px */
     }
 
     /* Adjust mobile text for smaller banner */
