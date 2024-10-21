@@ -203,12 +203,18 @@ async function generateBanner() {
             document.getElementById('textSc'),
             document.getElementById('copyImageButton'),
             document.getElementById('printBannerButton'),
-            document.getElementById('integrationFields')
+            document.getElementById('integrationFields'),
+            document.getElementById('shareButton')
         ];
         elementsToToggle.forEach(el => {
             if (el) el.style.display = addressValidated ? 'block' : 'none';
         });
         
+        if (!navigator.share) {
+            const shareButton = document.getElementById('shareButton');
+            if (shareButton) shareButton.style.display = 'none';
+        }
+
         console.log("Bannière générée avec succès");
         if (addressValidated) {
             updateIntegrationCode();
@@ -643,7 +649,7 @@ function generateIntegrationCode() {
 
     function openInfoInNewTab(event) {
         event.preventDefault(); // Empêche le comportement par défaut du lien
-        var url = "https://github.com/Unbanked0/Crypto-Donation-Box1";
+        var url = "https://github.com/Unbanked0/Crypto_Box_sticker";
         window.open(url, '_blank', 'noopener,noreferrer');
     }
 
@@ -708,6 +714,7 @@ function createBannerImage() {
 
 /* Warning! : don't try to make the banner transparent with corners : nearly impossible with QRcode canvas, not displaying anymore. */
 function createBannerImage() {
+    const bannerContainer = document.getElementById('banner-container');
     const bannerElement = document.getElementById('banner');
     
     // Éléments à cacher
@@ -715,6 +722,11 @@ function createBannerImage() {
     const purchaseCrypto = document.getElementById('purchaseCrypto');
     const infoButton = document.getElementById('infoButton');
     
+    // Sauvegarder les styles originaux
+    const originalPadding = bannerContainer.style.padding;
+    const originalWidth = bannerContainer.style.width;
+    const originalDisplay = bannerContainer.style.display;
+
     // Sauvegarder l'état actuel de visibilité
     const mobileTextDisplay = mobileText.style.display;
     const purchaseCryptoDisplay = purchaseCrypto.style.display;
@@ -725,13 +737,26 @@ function createBannerImage() {
     purchaseCrypto.style.display = 'none';
     infoButton.style.display = 'none';
     
-    return html2canvas(bannerElement, {
-        willReadFrequently: true
+    // Ajuster le conteneur pour la capture
+    bannerContainer.style.display = 'inline-block';
+    bannerContainer.style.padding = '20px';
+    /* 20 px padding around the banner */
+
+    bannerContainer.style.width = `${bannerElement.offsetWidth+40}px`;
+    
+    return html2canvas(bannerContainer, {
+        willReadFrequently: true,
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        width: bannerElement.offsetWidth + 40, // Largeur de la bannière + 2 * padding
+        height: bannerElement.offsetHeight + 64 // Hauteur de la bannière + 2 * padding
     }).then(canvas => {
         // Restaurer l'état de visibilité des éléments
         mobileText.style.display = mobileTextDisplay;
         purchaseCrypto.style.display = purchaseCryptoDisplay;
         infoButton.style.display = infoButtonDisplay;
+        bannerContainer.style.padding = originalPadding;
+        bannerContainer.style.width = originalWidth;
+        bannerContainer.style.display = originalDisplay;
         
         return canvas;
     }).catch(error => {
@@ -739,6 +764,9 @@ function createBannerImage() {
         mobileText.style.display = mobileTextDisplay;
         purchaseCrypto.style.display = purchaseCryptoDisplay;
         infoButton.style.display = infoButtonDisplay;
+        bannerContainer.style.padding = originalPadding;
+        bannerContainer.style.width = originalWidth;
+        bannerContainer.style.display = originalDisplay;
         
         throw error;
     });
@@ -833,7 +861,7 @@ function handleMobileTextClick() {
 
 function openMoneroWalletOrCakeWallet() {
     // Tentative d'ouverture de l'application Monero
-    const moneroScheme = 'monero://open';
+    const moneroScheme = 'monero://get_address';
     const cakeWalletUrl = 'https://cakewallet.com';
 
     // Créer un élément iframe caché
@@ -852,7 +880,7 @@ function openMoneroWalletOrCakeWallet() {
 
             window.open(cakeWalletUrl, '_blank');
         }
-    }, 500);
+    }, 3000);
 }
 
 
@@ -871,6 +899,160 @@ function setupQRCodeClickToCopy() {
     });
 }
 
+// Share button (Telegram, Session, Nostr..)
+async function shareBanner() {
+    if (!navigator.share) {
+        // alert("La fonctionnalité de partage n'est pas disponible sur votre navigateur.");
+        console.log("La fonctionnalité de partage n'est pas disponible sur votre navigateur.");
+        return;
+    }
+
+    try {
+        const canvas = await createBannerImage();
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        const file = new File([blob], 'crypto-donation-banner.png', { type: 'image/png' });
+
+        await navigator.share({
+            files: [file],
+            title: 'Bannière de don en crypto',
+            text: 'Voici ma bannière de don en crypto-monnaie!'
+        });
+
+        console.log('Bannière partagée avec succès');
+    } catch (error) {
+        console.error('Erreur lors du partage de la bannière:', error);
+        // alert("Une erreur est survenue lors du partage. Veuillez réessayer.");
+    }
+}
+
+
+async function printBanner() {
+    console.log("Préparation de l'impression...");
+    try {
+        const canvas = await createBannerImage();
+        console.log("Image préparée");
+        const dataUrl = canvas.toDataURL('image/png');
+        
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Imprimer la bannière</title>
+                    <style>
+                        body {
+                            margin: 0;
+                            padding: 20px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            height: 100vh;
+                            font-family: Arial, sans-serif;
+                        }
+                        #size-control {
+                            width: 60%;
+                            display: flex;
+                            align-items: center;
+                            margin-bottom: 20px;
+                        }
+                        #size-slider {
+                            flex-grow: 1;
+                            margin: 0 10px;
+                            -webkit-appearance: none;
+                            height: 5px;
+                            background: #d3d3d3;
+                            outline: none;
+                            opacity: 0.7;
+                            transition: opacity .2s;
+                        }
+                        #size-slider:hover {
+                            opacity: 1;
+                        }
+                        #size-slider::-webkit-slider-thumb {
+                            -webkit-appearance: none;
+                            appearance: none;
+                            width: 15px;
+                            height: 15px;
+                            background: #888;
+                            cursor: pointer;
+                            border-radius: 50%;
+                        }
+                        #size-slider::-moz-range-thumb {
+                            width: 15px;
+                            height: 15px;
+                            background: #888;
+                            cursor: pointer;
+                            border-radius: 50%;
+                        }
+                        #image-container {
+                            display: flex;
+                            justify-content: center;
+                            align-items: flex-start;
+                            width: 100%;
+                        }
+                        img {
+                            max-width: 60%;
+                            max-height: 80vh;
+                            object-fit: contain;
+                        }
+                        button {
+                            margin-top: 20px;
+                            padding: 10px 20px;
+                            background-color: #4CAF50;
+                            color: white;
+                            border: none;
+                            border-radius: 5px;
+                            cursor: pointer;
+                        }
+                        button:hover {
+                            background-color: #45a049;
+                        }
+                        @media print {
+                            #size-control, button {
+                                display: none;
+                            }
+                            body {
+                                padding: 0;
+                            }
+                            img {
+                                max-width: 100%;
+                                max-height: 100vh;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div id="size-control">
+                        <span style="color: #888;">Petite</span>
+                        <input type="range" id="size-slider" min="20" max="80" value="60">
+                        <span style="color: #888;">Grande</span>
+                    </div>
+                    <div id="image-container">
+                        <img src="${dataUrl}" alt="Bannière de don en crypto" id="banner-image">
+                    </div>
+                    <button onclick="printAndClose()">Imprimer</button>
+                    <script>
+                        const img = document.getElementById('banner-image');
+                        const slider = document.getElementById('size-slider');
+                        
+                        slider.oninput = function() {
+                            img.style.maxWidth = this.value + '%';
+                            img.style.maxHeight = (this.value * 0.8) + 'vh';
+                        }
+                        
+                        function printAndClose() {
+                            window.print();
+                            setTimeout(() => window.close(), 500);
+                        }
+                    </script>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+    } catch (error) {
+        console.error('Erreur lors de l\'impression de la bannière:', error);
+        alert("Une erreur est survenue lors de l'impression de la bannière. Veuillez essayer une autre méthode");
+    }
+}
 
 function toggleAddress() {
     const shortAddressElement = document.getElementById('shortAddress');
@@ -916,6 +1098,7 @@ function toggleMobileText(show) {
     }
 }
 
+
 function testCryptoBox(){
 	
 		// Récupérer le contenu du textarea
@@ -934,11 +1117,11 @@ function testCryptoBox(){
 
 		// Injecter le code HTML dans le body du nouvel onglet
         newWindow.document.write(`
-            <html><head><title>Affichage du code HTML</title>
+            <html><head><title>Affichage du code HTML</title> 
             </head><body>
         `);
         newWindow.document.write(htmlContent);
-		newWindow.document.write('</body></html>');
+		newWindow.document.write('<span style="text-align:center;"> QR Code de démo (fixe) uniquement !</span></body></html>');
 
 		// Fermer l'écriture pour que le contenu s'affiche
 		newWindow.document.close();
